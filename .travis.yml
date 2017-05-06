@@ -1,9 +1,11 @@
 sudo: required
 dist: trusty
-script:
+install:
   - bash -xve ./test/travis_ros_install.bash
   - source ~/catkin_ws/devel/setup.bash
+before_script:
   - bash -xve ./test/travis_package_make.bash
   - source ~/catkin_ws/devel/setup.bash
   - bash -xve ./test/travis_prepare_dummy_files.bash
+script:
   - rostest raspimouse_ros_2 test.launch
