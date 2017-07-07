@@ -3,4 +3,5 @@
   <node pkg="raspimouse_ros_2" name="lightsensors" type="lightsensors.py" required="true" />
   <node pkg="raspimouse_ros_2" name="motors" type="motors.py" required="true" />
   <node pkg="raspimouse_ros_2" name="leds" type="leds" required="true" />
+  <node pkg="raspimouse_ros_2" name="buttons" type="buttons" required="true" />
 </launch>
