@@ -50,6 +50,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   LightSensorValues.msg
+  Leds.msg
   MotorFreqs.msg
 )
 
@@ -134,12 +135,10 @@ add_executable(leds src/leds.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(leds ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(leds ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(raspimouse_ros_2_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(leds ${catkin_LIBRARIES})
 
 #############
 ## Install ##

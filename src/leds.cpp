@@ -1,15 +1,38 @@
 #include "ros/ros.h"
 #include <ros/package.h> 
+#include "raspimouse_ros_2/Leds.h"
+#include <fstream>
 using namespace ros;
 
 NodeHandle *np;
 
+void output(std::ofstream *ofs, bool input)
+{
+	*ofs << (input ? '1' : '0') << std::endl;
+}
+
+void cb(const raspimouse_ros_2::Leds::ConstPtr& msg)
+{
+	std::ofstream ofs("/dev/rtled0");
+	output(&ofs, msg->right_side);
+
+	/*
+	leds[1] = msg->right_forward;
+	leds[2] = msg->left_forward;
+	leds[3] = msg->left_side;
+	*/
+}
+
+
 int main(int argc, char **argv)
 {
 	init(argc,argv,"led");
-//	NodeHandle n;
-//	np = &n;
+	NodeHandle n;
+	np = &n;
 
+	Subscriber sub = n.subscribe("leds", 10, cb);
+
+	ros::spin();
 	exit(0);
 }
 
