@@ -1,6 +1,6 @@
 #include "ros/ros.h"
 #include <ros/package.h> 
-#include "raspimouse_ros_2/Leds.h"
+#include "raspimouse_ros_2/LedValues.h"
 #include <fstream>
 using namespace ros;
 
@@ -9,7 +9,7 @@ void output(std::ofstream *ofs, bool input)
 	*ofs << (input ? '1' : '0') << std::endl;
 }
 
-void cb(const raspimouse_ros_2::Leds::ConstPtr& msg)
+void cb(const raspimouse_ros_2::LedValues::ConstPtr& msg)
 {
 	std::ofstream ofs0("/dev/rtled0");
 	output(&ofs0, msg->right_side);
