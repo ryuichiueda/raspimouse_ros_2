@@ -51,6 +51,7 @@ add_message_files(
   FILES
   LightSensorValues.msg
   Leds.msg
+  Buttons.msg
   MotorFreqs.msg
 )
 
@@ -132,6 +133,7 @@ include_directories(
 
 # Declare a C++ executable
 add_executable(leds src/leds.cpp)
+add_executable(buttons src/buttons.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -139,6 +141,7 @@ add_executable(leds src/leds.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(leds ${catkin_LIBRARIES})
+target_link_libraries(buttons ${catkin_LIBRARIES})
 
 #############
 ## Install ##
