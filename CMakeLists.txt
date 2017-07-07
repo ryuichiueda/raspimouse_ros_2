@@ -6,6 +6,7 @@ project(raspimouse_ros_2)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   rospy
+  roscpp
   std_msgs
   std_srvs
   message_generation
@@ -118,22 +119,22 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-## Declare a C++ library
-# add_library(raspimouse_ros_2
-#   src/${PROJECT_NAME}/raspimouse_ros_2.cpp
-# )
+# Declare a C++ library
+#add_library(leds
+#   src/${PROJECT_NAME}/leds.cpp
+#)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(raspimouse_ros_2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(leds ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-## Declare a C++ executable
-# add_executable(raspimouse_ros_2_node src/raspimouse_ros_2_node.cpp)
+# Declare a C++ executable
+add_executable(leds src/leds.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(raspimouse_ros_2_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(leds ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(raspimouse_ros_2_node
