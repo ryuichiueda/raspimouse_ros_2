@@ -1,6 +1,6 @@
 <launch>
   <node pkg="raspimouse_ros_2" name="buzzer" type="buzzer.py" required="true" />
-  <node pkg="raspimouse_ros_2" name="lightsensors" type="lightsensors.py" required="true" />
+  <node pkg="raspimouse_ros_2" name="lightsensors" type="lightsensors" required="true" />
   <node pkg="raspimouse_ros_2" name="motors" type="motors.py" required="true" />
   <test test-name="test_buzzer" pkg="raspimouse_ros_2" type="travis_test_buzzer.py" />
   <test test-name="test_lightsensors" pkg="raspimouse_ros_2" type="travis_test_lightsensors.py" />
