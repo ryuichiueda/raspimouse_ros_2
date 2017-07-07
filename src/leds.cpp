@@ -13,14 +13,14 @@ void output(std::ofstream *ofs, bool input)
 
 void cb(const raspimouse_ros_2::Leds::ConstPtr& msg)
 {
-	std::ofstream ofs("/dev/rtled0");
-	output(&ofs, msg->right_side);
-
-	/*
-	leds[1] = msg->right_forward;
-	leds[2] = msg->left_forward;
-	leds[3] = msg->left_side;
-	*/
+	std::ofstream ofs0("/dev/rtled0");
+	output(&ofs0, msg->right_side);
+	std::ofstream ofs1("/dev/rtled1");
+	output(&ofs1, msg->right_forward);
+	std::ofstream ofs2("/dev/rtled2");
+	output(&ofs2, msg->left_forward);
+	std::ofstream ofs3("/dev/rtled3");
+	output(&ofs3, msg->left_side);
 }
 
 
