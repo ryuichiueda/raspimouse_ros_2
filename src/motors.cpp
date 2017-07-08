@@ -20,7 +20,7 @@ void callbackCmdvel(const geometry_msgs::Twist::ConstPtr& msg);
 
 bool is_on = false;
 bool in_cmdvel = false;
-Time last_cmdvel = Time::now();
+Time last_cmdvel;
 
 bool setPower(bool on)
 {
