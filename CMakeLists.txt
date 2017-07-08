@@ -139,6 +139,9 @@ add_executable(lightsensors src/lightsensors.cpp)
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 #add_dependencies(leds ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(leds ${TARGET_NAME} ${PROJECT_NAME}_generate_messages_cpp)
+add_dependencies(buttons ${TARGET_NAME} ${PROJECT_NAME}_generate_messages_cpp)
+add_dependencies(lightsensors ${TARGET_NAME} ${PROJECT_NAME}_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(leds ${catkin_LIBRARIES})
