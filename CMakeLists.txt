@@ -133,6 +133,7 @@ include_directories(
 
 # Declare a C++ executable
 add_executable(leds src/leds.cpp)
+add_executable(motors src/motors.cpp)
 add_executable(buttons src/buttons.cpp)
 add_executable(lightsensors src/lightsensors.cpp)
 
@@ -140,11 +141,13 @@ add_executable(lightsensors src/lightsensors.cpp)
 ## same as for the library above
 #add_dependencies(leds ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(leds ${TARGET_NAME} ${PROJECT_NAME}_generate_messages_cpp)
+add_dependencies(motors ${TARGET_NAME} ${PROJECT_NAME}_generate_messages_cpp)
 add_dependencies(buttons ${TARGET_NAME} ${PROJECT_NAME}_generate_messages_cpp)
 add_dependencies(lightsensors ${TARGET_NAME} ${PROJECT_NAME}_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(leds ${catkin_LIBRARIES})
+target_link_libraries(motors ${catkin_LIBRARIES})
 target_link_libraries(buttons ${catkin_LIBRARIES})
 target_link_libraries(lightsensors ${catkin_LIBRARIES})
 
