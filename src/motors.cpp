@@ -99,9 +99,10 @@ void callbackRaw(const raspimouse_ros_2::MotorFreqs::ConstPtr& msg)
 
 void callbackCmdvel(const geometry_msgs::Twist::ConstPtr& msg)
 {
-	int forward_hz = 80000.0*msg->linear.x/(9*3.141592);
-	int rot_hz = 400.0*msg->angular.z/3.141592;
-	setFreqs(forward_hz-rot_hz, forward_hz+rot_hz);
+	double forward_hz = 80000.0*msg->linear.x/(9*3.141592);
+	double rot_hz = 400.0*msg->angular.z/3.141592;
+	ROS_INFO("%d %d\n",(int)round(forward_hz-rot_hz), (int)round(forward_hz+rot_hz));
+	setFreqs(int(forward_hz-rot_hz), int(forward_hz+rot_hz));
 	in_cmdvel = true;
 	last_cmdvel = Time::now();
 }
