@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_srvs
   message_generation
   actionlib_msgs
+  tf2_ros
 )
 
 ## System dependencies are found with CMake's conventions

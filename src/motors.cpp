@@ -5,6 +5,10 @@
 #include "geometry_msgs/Twist.h"
 #include "raspimouse_ros_2/MotorFreqs.h"
 #include "raspimouse_ros_2/TimedMotion.h"
+#include <nav_msgs/Odometry.h>
+#include <tf/tf.h>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_ros/transform_broadcaster.h>
 #include <fstream>
 using namespace ros;
 
@@ -21,6 +25,11 @@ void callbackCmdvel(const geometry_msgs::Twist::ConstPtr& msg);
 bool is_on = false;
 bool in_cmdvel = false;
 Time last_cmdvel;
+Time cur_time;
+Time send_time;
+
+geometry_msgs::Twist vel;
+double odom_x,odom_y,odom_theta;
 
 bool setPower(bool on)
 {
@@ -99,11 +108,65 @@ void callbackRaw(const raspimouse_ros_2::MotorFreqs::ConstPtr& msg)
 
 void callbackCmdvel(const geometry_msgs::Twist::ConstPtr& msg)
 {
+	vel.linear.x = msg->linear.x;
+	vel.angular.z = msg->angular.z;
+
 	double forward_hz = 80000.0*msg->linear.x/(9*3.141592);
 	double rot_hz = 400.0*msg->angular.z/3.141592;
 	setFreqs((int)round(forward_hz-rot_hz), (int)round(forward_hz+rot_hz));
 	in_cmdvel = true;
 	last_cmdvel = Time::now();
+}
+
+nav_msgs::Odometry send_odom(void)
+{
+	cur_time = Time::now();
+
+	double dt = cur_time.toSec() - last_cmdvel.toSec();
+	odom_x += vel.linear.x * cos(odom_theta) * dt;
+	odom_y += vel.linear.x * sin(odom_theta) * dt;
+	odom_theta += vel.angular.z * dt;
+
+	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(odom_theta);
+
+	static tf2_ros::TransformBroadcaster br;
+
+
+	geometry_msgs::TransformStamped odom_trans;
+ 	odom_trans.header.stamp = cur_time;
+  	odom_trans.header.frame_id = "odom";
+	odom_trans.child_frame_id = "base_link";
+
+  	odom_trans.transform.translation.x = odom_x;
+  	odom_trans.transform.translation.y = odom_y;
+  	odom_trans.transform.translation.z = 0.0;
+
+	tf2::Quaternion q;
+	q.setRPY(0, 0, odom_theta);
+	odom_trans.transform.rotation.x = q.x();
+ 	odom_trans.transform.rotation.y = q.y();
+	odom_trans.transform.rotation.z = q.z();
+	odom_trans.transform.rotation.w = q.w();
+
+	br.sendTransform(odom_trans);
+
+	nav_msgs::Odometry odom;
+	odom.header.stamp = cur_time;
+	odom.header.frame_id = "odom";
+	odom.child_frame_id = "base_link";
+
+	odom.pose.pose.position.x = odom_x;
+	odom.pose.pose.position.y = odom_y;
+	odom.pose.pose.position.z = 0.0;
+  	odom_trans.transform.rotation = odom_quat;
+	odom.pose.pose.orientation = odom_quat;
+
+	odom.twist.twist.linear.x = vel.linear.x;
+	odom.twist.twist.linear.y = 0.0;
+	odom.twist.twist.angular.z = vel.angular.z;
+
+	send_time = cur_time;
+	return odom;
 }
 
 int main(int argc, char **argv)
@@ -120,12 +183,19 @@ int main(int argc, char **argv)
 	
 	Subscriber sub_raw = n.subscribe("motor_raw", 10, callbackRaw);
 	Subscriber sub_cmdvel = n.subscribe("cmd_vel", 10, callbackCmdvel);
+	Publisher pub_odom = n.advertise<nav_msgs::Odometry>("odom", 10);
+	odom_x = 0.0;
+	odom_y = 0.0;
+	odom_theta = 0.0;
+
+	send_time = Time::now();
 
 	Rate loop_rate(10);
 	while(ok()){
 		if(in_cmdvel and Time::now().toSec() - last_cmdvel.toSec() >= 1.0)
 			setFreqs(0,0);
 
+		pub_odom.publish(send_odom());
 		spinOnce();
 		loop_rate.sleep();
 	}
