@@ -74,7 +74,7 @@ source ~/catkin_ws/devel/setup.bash
 
 ### 7. Test with the buzzer node
 
-    ```
-    roslaunch raspimouse_ros_2 raspimouse.launch
-    rostopic pub /buzzer std_msgs/UInt16 1000
-    ```
+```
+roslaunch raspimouse_ros_2 raspimouse.launch
+rostopic pub /buzzer std_msgs/UInt16 1000
+```
