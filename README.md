@@ -72,20 +72,9 @@ source ~/catkin_ws/devel/setup.bash
 ```
 
 
-## Usage
-
-* Sound buzzer
+### 7. Test with the buzzer node
 
     ```
     roslaunch raspimouse_ros_2 raspimouse.launch
     rostopic pub /buzzer std_msgs/UInt16 1000
-    ```
-
-* Control motor
-
-    ```
-    echo 1 > /dev/rtmotoren0
-    roslaunch raspimouse_ros_2 raspimouse.launch
-    rostopic pub /motor_raw raspimouse_ros_2/MotorFreqs "left_hz: 400
-    right_hz: 400"
     ```
