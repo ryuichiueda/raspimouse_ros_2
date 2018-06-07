@@ -78,3 +78,24 @@ source ~/catkin_ws/devel/setup.bash
 roslaunch raspimouse_ros_2 raspimouse.launch
 rostopic pub /buzzer std_msgs/UInt16 1000
 ```
+
+## Support of RT-USB-9axisIMU2
+
+If you have an RT-USB-9axisIMU2 9-axis sensor, its z angular velocity can be reflected to the `/odom` topic. 
+
+
+### requirement
+
+* hardware: RT-USB-9axisIMU2 (text mode)
+* software: https://github.com/AtsushiSaito/rt_usb_9axis_sensor
+
+### configuration
+
+Please set `1` to the argument `imu`. When you want to use this feature permanently, please rewrite the arg element of raspimouse.launch as follows. 
+
+```raspimouse.launch 
+<launch>
+  <arg name="imu" default="1" />   <!-- change from 0 to 1 -->
+    <include if="$(arg imu)" file="$(find rt_usb_9axis_sensor)/launch/rt_usb_9axis_sensor.launch" />
+...
+```
