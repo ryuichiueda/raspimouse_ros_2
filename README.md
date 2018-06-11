@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ryuichiueda/raspimouse_ros_2.svg?branch=dev)](https://travis-ci.org/ryuichiueda/raspimouse_ros_2)
+[![Build Status](https://travis-ci.org/ryuichiueda/raspimouse_ros_2.svg?branch=master)](https://travis-ci.org/ryuichiueda/raspimouse_ros_2)
 
 # raspimouse_ros_2
 
