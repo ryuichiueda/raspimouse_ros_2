@@ -191,7 +191,7 @@ int main(int argc, char **argv)
 	setFreqs(0,0);
 
 	init(argc,argv,"motors");
-	NodeHandle n("~");
+	NodeHandle n;
 
 	std::string onoff;
 	if(argc > 1)

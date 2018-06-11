@@ -8,7 +8,7 @@
     <param name="frequency" value="10" />
   </node>
 
-  <arg name="initial_motor_power" default="off" />
+  <arg name="initial_motor_power" default="on" />
   <node pkg="raspimouse_ros_2" name="motors" type="motors" required="true"
     output="screen" args="$(arg initial_motor_power)" />
 
