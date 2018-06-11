@@ -1,12 +1,17 @@
 <launch>
-  <arg name="imu" default="0" />
+  <arg name="imu" default="1" />
   <include if="$(arg imu)" file="$(find rt_usb_9axis_sensor)/launch/rt_usb_9axis_sensor.launch" />
 
   <node pkg="raspimouse_ros_2" name="buzzer" type="buzzer.py" required="true" />
+
   <node pkg="raspimouse_ros_2" name="lightsensors" type="lightsensors" required="true">
     <param name="frequency" value="10" />
   </node>
-  <node pkg="raspimouse_ros_2" name="motors" type="motors" required="true" output="screen" />
+
+  <arg name="initial_motor_power" default="off" />
+  <node pkg="raspimouse_ros_2" name="motors" type="motors" required="true"
+    output="screen" args="$(arg initial_motor_power)" />
+
   <node pkg="raspimouse_ros_2" name="leds" type="leds" required="true" />
   <node pkg="raspimouse_ros_2" name="buttons" type="buttons" required="true" />
 </launch>

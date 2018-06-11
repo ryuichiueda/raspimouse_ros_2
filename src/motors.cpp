@@ -188,10 +188,17 @@ nav_msgs::Odometry send_odom(void)
 
 int main(int argc, char **argv)
 {
-	init(argc,argv,"motors");
-	NodeHandle n;
+	setFreqs(0,0);
 
-	setPower(false);
+	init(argc,argv,"motors");
+	NodeHandle n("~");
+
+	std::string onoff;
+	if(argc > 1)
+		onoff = argv[1];
+
+	setPower(onoff == "on");
+
 	signal(SIGINT, onSigint);
 
 	last_cmdvel = Time::now();
