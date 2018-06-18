@@ -1,5 +1,5 @@
 <launch>
-  <arg name="imu" default="1" />
+  <arg name="imu" default="0" />
   <include if="$(arg imu)" file="$(find rt_usb_9axis_sensor)/launch/rt_usb_9axis_sensor.launch" />
 
   <node pkg="raspimouse_ros_2" name="buzzer" type="buzzer.py" required="true" />
