@@ -10,6 +10,8 @@
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_ros/transform_broadcaster.h>
 #include <fstream>
+#include "sensor_msgs/Imu.h"
+
 using namespace ros;
 
 bool setPower(bool);
@@ -21,6 +23,7 @@ bool callbackOff(std_srvs::Trigger::Request&, std_srvs::Trigger::Response&);
 bool callbackTimedMotion(raspimouse_ros_2::TimedMotion::Request&, raspimouse_ros_2::TimedMotion::Response&);
 void callbackRaw(const raspimouse_ros_2::MotorFreqs::ConstPtr& msg);
 void callbackCmdvel(const geometry_msgs::Twist::ConstPtr& msg);
+void callback9Axis(const sensor_msgs::Imu::ConstPtr& msg);
 
 bool is_on = false;
 bool in_cmdvel = false;
@@ -30,6 +33,8 @@ Time send_time;
 
 geometry_msgs::Twist vel;
 double odom_x,odom_y,odom_theta;
+
+bool imu_flag = false;
 
 bool setPower(bool on)
 {
@@ -109,7 +114,9 @@ void callbackRaw(const raspimouse_ros_2::MotorFreqs::ConstPtr& msg)
 void callbackCmdvel(const geometry_msgs::Twist::ConstPtr& msg)
 {
 	vel.linear.x = msg->linear.x;
-	vel.angular.z = msg->angular.z;
+
+	if(!imu_flag)
+		vel.angular.z = msg->angular.z;
 
 	double forward_hz = 80000.0*msg->linear.x/(9*3.141592);
 	double rot_hz = 400.0*msg->angular.z/3.141592;
@@ -118,19 +125,29 @@ void callbackCmdvel(const geometry_msgs::Twist::ConstPtr& msg)
 	last_cmdvel = Time::now();
 }
 
+void callback9Axis(const sensor_msgs::Imu::ConstPtr& msg)
+{
+	if(not imu_flag){
+		ROS_INFO("9-axis sensor mode");
+		imu_flag = true;
+	}
+
+	vel.angular.z = round(msg->angular_velocity.z * 20)/20; // cut less than 0.05[rad/s]
+}
+
 nav_msgs::Odometry send_odom(void)
 {
 	cur_time = Time::now();
 
-	double dt = cur_time.toSec() - last_cmdvel.toSec();
+	double dt = cur_time.toSec() - send_time.toSec();
 	odom_x += vel.linear.x * cos(odom_theta) * dt;
 	odom_y += vel.linear.x * sin(odom_theta) * dt;
+
 	odom_theta += vel.angular.z * dt;
 
 	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(odom_theta);
 
 	static tf2_ros::TransformBroadcaster br;
-
 
 	geometry_msgs::TransformStamped odom_trans;
  	odom_trans.header.stamp = cur_time;
@@ -171,11 +188,22 @@ nav_msgs::Odometry send_odom(void)
 
 int main(int argc, char **argv)
 {
+	setFreqs(0,0);
+
 	init(argc,argv,"motors");
 	NodeHandle n;
 
-	setPower(false);
+	std::string onoff;
+	if(argc > 1)
+		onoff = argv[1];
+
+	setPower(onoff == "on");
+
 	signal(SIGINT, onSigint);
+
+	last_cmdvel = Time::now();
+	cur_time = Time::now();
+	send_time = Time::now();
 
 	ServiceServer srv_on = n.advertiseService("motor_on", callbackOn);
 	ServiceServer srv_off = n.advertiseService("motor_off", callbackOff);
@@ -183,6 +211,8 @@ int main(int argc, char **argv)
 	
 	Subscriber sub_raw = n.subscribe("motor_raw", 10, callbackRaw);
 	Subscriber sub_cmdvel = n.subscribe("cmd_vel", 10, callbackCmdvel);
+	Subscriber sub_9axis = n.subscribe("/imu/data_raw", 10, callback9Axis);
+
 	Publisher pub_odom = n.advertise<nav_msgs::Odometry>("odom", 10);
 	odom_x = 0.0;
 	odom_y = 0.0;
