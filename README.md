@@ -59,6 +59,8 @@ git clone https://github.com/ryuichiueda/raspimouse_ros_2.git
 
 ### 5. Resolve the system dependencies.
 
+Beforehand, please check the value of `$ROS_PACKAGE_PATH`. (The path to raspimouse_ros_2 should be included.)
+
 ```
 rosdep install raspimouse_ros_2
 ```
