@@ -222,8 +222,10 @@ int main(int argc, char **argv)
 
 	Rate loop_rate(10);
 	while(ok()){
-		if(in_cmdvel and Time::now().toSec() - last_cmdvel.toSec() >= 1.0)
+		if(in_cmdvel and Time::now().toSec() - last_cmdvel.toSec() >= 1.0){
 			setFreqs(0,0);
+			in_cmdvel = false;
+		}
 
 		pub_odom.publish(send_odom());
 		spinOnce();
